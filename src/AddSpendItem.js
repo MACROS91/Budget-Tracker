@@ -74,7 +74,13 @@ class AddSpendItem extends React.Component {
                         </Row>
                         <Row>
                             <Col>
-                                <Form.Control placeholder="Date" onChange={this.handleSpendDateChange.bind(this)} />
+                                <Form.Control as="select" placeholder="Date" onChange={this.handleSpendDateChange.bind(this)}>
+                                {this.props.dates.map((key) => {
+                                    return (
+                                        <option>{key}</option>
+                                    )
+                                })}
+                                </Form.Control>
                             </Col>
                             <Col>
                                 <Form.Control as="select" placeholder="Category" onChange={this.handleSpendCategoryChange.bind(this)}>

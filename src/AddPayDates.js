@@ -7,11 +7,25 @@ import Col from 'react-bootstrap/Col';
 import Button from 'react-bootstrap/Button';
 import Nav from 'react-bootstrap/Nav';
 import Modal from 'react-bootstrap/Modal';
+import DatePicker from 'react-datepicker';
+import Moment from 'moment';
+import {extendMoment} from 'moment-range';
+import "react-datepicker/dist/react-datepicker.css"
+const moment = extendMoment(Moment);
+
+
 
 class AddPayDates extends React.Component {
     constructor(props){
       super(props);
-      this.state = {showModal:false}
+      this.state = {
+          showModal: false,
+          startDate: new Date(), 
+          recurring: false,
+          payAmount: '',
+          frequency: 1,
+          endDate: new Date(),   
+        }
     }
   
     handleShowModalChange() {
@@ -19,17 +33,59 @@ class AddPayDates extends React.Component {
     }
   
     handlePayDateChange (payDate) {
-      this.props.handlePayDateChange(payDate.target.value);
+
+        var options = {
+            year: "numeric",
+            month: "2-digit",
+            day: "numeric"
+        };
+
+        const formattedDate = payDate.toLocaleString("en-US",options)
+        this.setState({startDate:payDate})
+        this.props.handlePayDateChange(formattedDate);
     }
   
+    handleEndPayDateChange (payDate) {
+        var options = {
+            year: "numeric",
+            month: "2-digit",
+            day: "numeric"
+        };
+
+        const formattedDate = payDate.toLocaleString("en-US",options)
+        this.setState({endDate:payDate})      
+    }
+
     handlePayAmountChange (payAmount) {
-      this.props.handlePayAmountChange(payAmount.target.value);
+        this.setState({payAmount:payAmount.target.value})
+        this.props.handlePayAmountChange(payAmount.target.value);
     }
   
     handleAddPayDate () {
-      this.props.handleAddPayDate();
+        let startDate = this.state.startDate
+        let endDate = this.state.endDate
+
+        var options = {
+            year: "numeric",
+            month: "2-digit",
+            day: "numeric"
+        };
+
+        while (startDate < endDate) {
+            startDate.setDate(startDate.getDate() + parseInt(this.state.frequency))
+            const formattedDate = startDate.toLocaleString("en-US",options)
+            console.log(formattedDate)
+            console.log(this.state.payAmount)
+            this.props.handleAddPayDate(formattedDate,this.state.payAmount)
+        }
+
     }
-    
+
+    handleFrequencyChange(event) {
+        console.log(event.target.value)
+        this.setState({frequency:event.target.value})
+    }
+
     render() {
       return (
         <>
@@ -45,19 +101,36 @@ class AddPayDates extends React.Component {
             </Modal.Header>
             <Modal.Body>
                 <Form>
-                <Row>
-                    <Col>
-                    <Form.Control placeholer="Pay Date" onChange={this.handlePayDateChange.bind(this)} />
+                    <Row>
+                        <Col>
+                            <DatePicker
+                                selected={this.state.startDate}
+                                onChange={this.handlePayDateChange.bind(this)}
+                            />
+                        </Col>
+                        <Col>
+                            <DatePicker
+                            selected={this.state.endDate}
+                            onChange={this.handleEndPayDateChange.bind(this)}
+                                />
+                        </Col>
+                        </Row>
+                       <Row>
+                        <Col>
+                        <Form.Control placeholder="Pay Amount" onChange={this.handlePayAmountChange.bind(this)} />
+                        </Col>
+                        <Col>
+                    <Form.Control placeholder="Frequency" as="select" onChange={this.handleFrequencyChange.bind(this)}>
+                        <option value={1}>One Time</option>
+                        <option value={7}>Weekly</option>
+                        <option value={14}>Biweekly</option>
+                        <option value={30}>Monthly</option>
+                    </Form.Control>
                     </Col>
-                    <Col>
-                    <Form.Control placeholder="Pay Amount" onChange={this.handlePayAmountChange.bind(this)} />
-                    </Col>
-                </Row>
-                <Row>
+                    </Row>
                     <Button onClick={this.handleAddPayDate.bind(this)}>Add Pay</Button>
-                </Row>
                 </Form>
-            </Modal.Body>
+                </Modal.Body>
             </Modal>
         </>
         );

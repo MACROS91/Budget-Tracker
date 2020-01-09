@@ -31,6 +31,7 @@ class Header extends React.Component {
             />
             <AddSpendItem
               categories={Object.keys(this.props.categories)} 
+              dates={this.props.dates}
               handleSpendNameChange={this.props.handleSpendNameChange}
               handleSpendAmountChange={this.props.handleSpendAmountChange}
               handleSpendDateChange={this.props.handleSpendDateChange}

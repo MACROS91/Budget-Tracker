@@ -29,8 +29,8 @@ class App extends React.Component {
     //const endDate = moment("2020-01-24", "YYYY-MM-DD");
     //let dates = moment.range(startDate, endDate)
     let dates = [
-      '2019-12-26', 
-      '2020-01-02',
+      '2019/12/26', 
+      '2020/01/02',
     ]
 
   let spending1 = {
@@ -59,17 +59,17 @@ class App extends React.Component {
   }
 
     let payData = {
-      '2019-12-26': spending1,
-      '2020-01-02': spending2,
+      '2019/12/26': spending1,
+      '2020/01/02': spending2,
     }
     let paySpendOrder = {
-      '2019-12-26': Object.keys(payData['2019-12-26']),
-      '2020-01-02': Object.keys(payData['2020-01-02']),
+      '2019/12/26': Object.keys(payData['2019/12/26']),
+      '2020/01/02': Object.keys(payData['2020/01/02']),
     }
 
     let payAmounts = {
-      '2019-12-26': 800,
-      '2020-01-02': 1600
+      '2019/12/26': 800,
+      '2020/01/02': 1600
     }
 
     let categories = {
@@ -189,7 +189,6 @@ class App extends React.Component {
     spendItem[this.state.inputSpendName] = {category: 'Regular Bills',
                                             amount: parseFloat(this.state.inputSpendAmount)}
 
-    // TODO refactor so this doesn't erase the existing object
     Object.assign(payData[this.state.inputSpendDate],spendItem)
 
 
@@ -230,16 +229,16 @@ class App extends React.Component {
     this.setState({inputPayAmount:payAmount})
   }
 
-  handleAddPayDate () {
+  handleAddPayDate (payDate,payAmount) {
     let payData = this.state.payData;
-    payData[this.state.inputPayDate] = {};
+    payData[payDate] = {};
     
     let payAmounts = this.state.payAmounts
-    payAmounts[this.state.inputPayDate] = this.state.inputPayAmount
+    payAmounts[payDate] = payAmount;
 
     let dates = Object.keys(payData)
     let paySpendOrder = this.state.paySpendOrder
-    paySpendOrder[this.state.inputPayDate] = []
+    paySpendOrder[payDate] = []
     this.setState({payData:payData,
                    paySpendOrder:paySpendOrder,
                    dates:dates})
@@ -302,6 +301,7 @@ class App extends React.Component {
       <div className="App">
       <Header 
         categories={this.state.categories}
+        dates={this.state.dates}
         handleSpendNameChange={this.handleSpendNameChange.bind(this)}
         handleSpendAmountChange={this.handleSpendAmountChange.bind(this)}
         handleSpendDateChange={this.handleSpendDateChange.bind(this)}
